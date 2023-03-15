@@ -1,0 +1,12 @@
+bin/
+obj/
+.vs/
+.git/
+
+*suo
+*sdf
+*.user
+*.obj
+*.dll
+*.exe
+.git
