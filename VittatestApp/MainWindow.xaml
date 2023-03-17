@@ -1,0 +1,142 @@
+﻿<Window x:Class="VittatestApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VittatestApp"
+        mc:Ignorable="d"
+        Title="VittaTestApp" MinHeight="450" MinWidth="800">
+    
+    <Grid
+        Margin="5 0 5 5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.6*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- WORKING AREA -->
+        <Grid
+            Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ORDERS -->
+            <Grid
+                Margin="5 0 5 5"
+                Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Text="Orders"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Grid.Row="0"/>
+
+                <DataGrid
+                    BorderThickness="0"
+                    Grid.Row="1">
+                    
+                </DataGrid>
+            </Grid>
+            
+            <!-- INCOMES -->
+            <Grid
+                Margin="5 0 5 5"
+                Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Text="Money Income"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Grid.Row="0"/>
+
+                <DataGrid
+                    BorderThickness="0"
+                    Grid.Row="1">
+                    
+                </DataGrid>
+            </Grid>
+        </Grid>
+
+        <!-- CONTROL PANEL -->
+        <Grid
+            Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="1.2*"/>
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Text="login info?"
+                    Grid.Row="0"/>
+
+                <Grid
+                    Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button
+                        Content="Arrange Payment"
+                        Height="30"
+                        Grid.Column="0"/>
+
+                    <Button
+                        Content="Cancel Payment"
+                        Height="30"
+                        Grid.Column="1"/>
+                </Grid>
+                
+
+                <TextBlock
+                    Text="info info info"
+                    Grid.Row="2"/>
+
+                <TextBlock
+                    Text="error messages errors erros errors"
+                    VerticalAlignment="Center"
+                    Foreground="Salmon"
+                    Grid.Row="4"/>
+            </Grid>
+
+            <!-- PAYMENTS -->
+            <Grid
+                Margin="5 0 5 5"
+                Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Text="Payments"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"/>
+
+                <DataGrid
+                    BorderThickness="0"
+                    Grid.Row="1">
+
+                </DataGrid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
