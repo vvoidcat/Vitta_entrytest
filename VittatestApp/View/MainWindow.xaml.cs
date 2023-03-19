@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace VittatestApp
+namespace VittatestApp.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
