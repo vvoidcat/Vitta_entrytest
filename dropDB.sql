@@ -1,9 +1,5 @@
 DROP TRIGGER vitta.trg_payments_insert;
-GO
-
 DROP TRIGGER vitta.trg_payments_update;
-GO
-
 DROP TRIGGER vitta.trg_payments_delete;
 GO
 

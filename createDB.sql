@@ -9,7 +9,7 @@ GO
 CREATE SCHEMA vitta;
 GO
 
--- orders
+-- orders / заказы
 CREATE TABLE test.vitta.orders (
     id bigint PRIMARY KEY IDENTITY,
     date datetime NOT NULL DEFAULT GETDATE(),
@@ -19,7 +19,7 @@ CREATE TABLE test.vitta.orders (
     CONSTRAINT chk_sum_payed_notnegative CHECK(sum_payed >= 0)
 );
 
--- money incomes
+-- money incomes / приход денег
 CREATE TABLE test.vitta.money_incomes (
     id bigint PRIMARY KEY IDENTITY NOT NULL,
     date datetime NOT NULL DEFAULT GETDATE(),
@@ -29,9 +29,9 @@ CREATE TABLE test.vitta.money_incomes (
     CONSTRAINT chk_balance_notnegative CHECK(balance >= 0)
 );
 
--- payments
+-- payments / платежи
 CREATE TABLE test.vitta.payments (
-    id bigint PRIMARY KEY IDENTITY,
+    id bigint PRIMARY KEY IDENTITY,     -- added a PKEY column to implement a deletion by payment transaction id
     order_id bigint NOT NULL,
     income_id bigint NOT NULL,
     sum money NOT NULL DEFAULT 0,
@@ -43,10 +43,10 @@ GO
 
 -- TRIGGERS
 
--- the DML trigger modifies the orders and money_incomes tables on INSERT
+-- the DML trigger that modifies the orders and money_incomes tables on INSERT
 -- upon its execution, orders.sum_payed should increase and money_incomes.balance should decrease respectfully
 -- money_incomes.balance cannot become negative (can only become 0)
--- payments.sum + orders.sum_payed should not be above orders.sum_whole (implemented as a forced return of excess money)
+-- payments.sum + orders.sum_payed should not be above orders.sum_whole (implemented as a forced return of the excess money)
 CREATE OR ALTER TRIGGER vitta.trg_payments_insert ON test.vitta.payments
 INSTEAD OF INSERT
 AS
@@ -54,15 +54,15 @@ AS
         DECLARE @i_inc_id bigint, @i_ord_id bigint, @i_sum money;
         SET @i_inc_id = (SELECT income_id FROM inserted);
         SET @i_ord_id = (SELECT order_id FROM inserted);
-        SELECT @i_sum = (SELECT sum FROM inserted);
+        SET @i_sum = (SELECT sum FROM inserted);
 
         IF @i_ord_id IN (SELECT id FROM orders)
         AND @i_inc_id IN (SELECT id FROM money_incomes)
-        AND (SELECT balance FROM money_incomes mi WHERE mi.id = @i_inc_id) - @i_sum >= 0
+        AND (SELECT balance FROM money_incomes WHERE id = @i_inc_id) - @i_sum >= 0
             BEGIN
-                -- should be a transaction !!
                 DECLARE @excess money;
-                SET @excess = (SELECT sum_payed FROM orders) - (SELECT sum_whole FROM orders) + @i_sum;
+                SET @excess = (SELECT sum_payed FROM orders WHERE id = @i_ord_id)
+                            - (SELECT sum_whole FROM orders WHERE id = @i_ord_id) + @i_sum;
 
                 IF @excess > 0
                     BEGIN
@@ -70,7 +70,11 @@ AS
                     END
 
                 INSERT INTO test.vitta.payments(order_id, income_id, sum)
-                VALUES (@i_ord_id, @i_inc_id, @i_sum);
+                VALUES (
+                    @i_ord_id, 
+                    @i_inc_id, 
+                    @i_sum
+                );
 
                 UPDATE test.vitta.money_incomes
                 SET balance -= @i_sum
@@ -83,18 +87,111 @@ AS
     END
 GO
 
+-- the DML trigger that modifies the orders and money_incomes tables on UPDATE
+-- performes comparison of old and new states of column values
+-- updates the orders and money_incomes tables with new values if the update is possible 
 CREATE OR ALTER TRIGGER vitta.trg_payments_update ON test.vitta.payments
 INSTEAD OF UPDATE
 AS
+    BEGIN
+        DECLARE @old_inc_id bigint, @old_ord_id bigint, @old_sum money;
+        DECLARE @new_id bigint, @new_inc_id bigint, @new_ord_id bigint, @new_sum money;
+
+        SET @old_inc_id = (SELECT income_id FROM deleted);
+        SET @old_ord_id = (SELECT order_id FROM deleted);
+        SET @old_sum = (SELECT sum FROM deleted);
+
+        SET @new_id = (SELECT id FROM inserted);
+        SET @new_inc_id = (SELECT income_id FROM inserted);
+        SET @new_ord_id = (SELECT order_id FROM inserted);
+        SET @new_sum = (SELECT sum FROM inserted);
+
+        IF @new_ord_id NOT IN (SELECT id FROM orders) OR @new_inc_id NOT IN (SELECT id FROM money_incomes)
+            BEGIN
+                return;
+            END
+
+        IF @new_inc_id != @old_inc_id
+            BEGIN
+                UPDATE money_incomes
+                SET balance += @old_sum
+                WHERE id = @old_inc_id;
+
+                -- UPDATE money_incomes
+                -- SET balance -= @old_sum
+                -- WHERE id = @new_inc_id;
+            END
+        
+        IF @new_ord_id != @old_ord_id
+            BEGIN
+                UPDATE orders
+                SET sum_payed -= @old_sum
+                WHERE id = @old_ord_id;
+
+                UPDATE orders
+                SET sum_payed += @old_sum
+                WHERE id = @new_ord_id;
+            END
+
+        IF (SELECT balance FROM money_incomes WHERE id = @new_inc_id) + @old_sum - @new_sum >= 0
+        AND (SELECT balance FROM money_incomes WHERE id = @new_inc_id) + @old_sum - @new_sum <=
+            (SELECT incoming_payment FROM money_incomes WHERE id = @new_inc_id)
+            BEGIN
+                DECLARE @excess money;
+                SET @excess = (SELECT sum_payed FROM orders WHERE id = @new_ord_id) - @old_sum
+                            - (SELECT sum_whole FROM orders WHERE id = @new_ord_id) + @new_sum;
+
+                IF @excess > 0
+                    BEGIN
+                        SET @new_sum -= @excess;
+                    END
+
+                UPDATE test.vitta.money_incomes
+                SET balance += @old_sum - @new_sum
+                WHERE @new_inc_id = id;
+
+                UPDATE test.vitta.orders
+                SET sum_payed += @new_sum - @old_sum
+                WHERE @new_ord_id = id;
+
+                UPDATE test.vitta.payments
+                SET
+                    order_id = @new_ord_id,
+                    income_id = @new_inc_id,
+                    sum = @new_sum
+                WHERE @new_id = id;
+            END
+    END
 GO
 
-CREATE OR ALTER TRIGGER vitta.trg_payments_delete
-INSTEAD OF DELETE
+-- the DML trigger that modifies the orders and money_incomes tables on DELETE
+-- if a deletion from the payments table is performed, money from orders gets transferred back to money_incomes
+-- (in the situation where the user tries to delete a payment, i assume that the payment has been cancelled)
+CREATE OR ALTER TRIGGER vitta.trg_payments_delete ON test.vitta.payments
+AFTER DELETE
 AS
+    BEGIN
+        DECLARE @d_inc_id bigint, @d_ord_id bigint, @d_sum money;
+        SET @d_inc_id = (SELECT income_id FROM deleted);
+        SET @d_ord_id = (SELECT order_id FROM deleted);
+        SET @d_sum = (SELECT sum FROM deleted);
+
+        IF @d_ord_id IN (SELECT id FROM orders)
+        AND @d_inc_id IN (SELECT id FROM money_incomes)
+        AND @d_sum > 0
+            BEGIN
+                UPDATE test.vitta.money_incomes
+                SET balance += @d_sum
+                WHERE @d_inc_id = id;
+
+                UPDATE test.vitta.orders
+                SET sum_payed -= @d_sum 
+                WHERE @d_ord_id = id;
+            END
+    END
 GO
 
-
--- VALUES INSERTION
+-- INITIAL VALUES INSERTION
 
 INSERT INTO test.vitta.orders(sum_whole, sum_payed) VALUES
 (100, 0),
@@ -114,10 +211,26 @@ insert into test.vitta.money_incomes(incoming_payment, balance) VALUES (2000, 20
 go
 
 INSERT INTO test.vitta.payments(order_id, income_id, sum) VALUES
-(1, 1, 1900);
+(2, 2, 1000);
 GO
+
+select * from test.vitta.orders;
+select * from test.vitta.money_incomes;
 select * from test.vitta.payments;
 go
+
+update test.vitta.payments
+set order_id = 1, income_id = 1, sum = -10000
+where id = 2;
+go
+
+select * from test.vitta.orders;
+select * from test.vitta.money_incomes;
+select * from test.vitta.payments;
+go
+
+delete from test.vitta.payments
+where id = 5;
 
 select * from test.vitta.orders;
 select * from test.vitta.money_incomes;
