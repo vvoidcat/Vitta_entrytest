@@ -1,0 +1,37 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <!-- TABLES -->
+    <Style x:Key="Style_TableHeaders" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+
+    <Style x:Key="Style_TableTextBoxes" TargetType="TextBox">
+        <Setter Property="BorderBrush" Value="WhiteSmoke"/>
+    </Style>
+
+    <Style x:Key="Style_TableAddButtons" TargetType="Button">
+        <Setter Property="BorderBrush" Value="WhiteSmoke"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Height" Value="20"/>
+    </Style>
+
+    <Style x:Key="Style_DataGrid" TargetType="DataGrid">
+        <Setter Property="Background" Value="WhiteSmoke"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    
+    
+    <!-- ERRORS -->
+    <Style x:Key="Style_ErrorText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="Salmon"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    
+    <!-- -->
+</ResourceDictionary>
