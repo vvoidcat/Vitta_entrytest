@@ -33,7 +33,7 @@ CREATE TABLE test.vitta.money_incomes (
 
 -- TABLE: payments / платежи
 CREATE TABLE test.vitta.payments (
-    id bigint PRIMARY KEY IDENTITY,     -- added a PKEY column to implement a deletion by payment transaction id trigger
+    id bigint PRIMARY KEY IDENTITY,     -- added a PKEY column to implement a deletion by payment id trigger
     order_id bigint NOT NULL,
     income_id bigint NOT NULL,
     sum money NOT NULL DEFAULT 0,
@@ -45,10 +45,11 @@ GO
 
 -- TRIGGERS
 
--- the DML trigger that modifies the orders and money_incomes tables on INSERT.
--- upon its execution, orders.sum_payed should increase and money_incomes.balance should decrease respectfully.
--- money_incomes.balance cannot become negative (can only become 0).
--- payments.sum + orders.sum_payed should not be above orders.sum_whole (implemented as a forced return of the excess money).
+-- the DML trigger that modifies the *payments*, *orders* and *money_incomes* tables on INSERT.
+-- upon its execution, *orders.sum_payed* should increase and *money_incomes.balance* should decrease respectfully.
+-- *money_incomes.balance* cannot become negative (can only become 0).
+-- *payments.sum* + *orders.sum_payed* should not be above *orders.sum_whole*
+-- (implemented as a forced return of the excess money).
 CREATE OR ALTER TRIGGER vitta.trg_payments_insert ON test.vitta.payments
 INSTEAD OF INSERT
 AS
@@ -89,13 +90,12 @@ AS
     END
 GO
 
--- the DML trigger that modifies the orders and money_incomes tables on UPDATE.
+-- the DML trigger that modifies the *payments*, *orders* and *money_incomes* tables on UPDATE.
 -- performes comparison of old and new states of column values.
--- updates the orders and money_incomes tables with new values if the update is possible.
--- update is rendered impossible if either new or old money_incomes.balance values can't store
+-- the update is rendered impossible if neither new or old *money_incomes.balance* values can
 -- the amount of money entered by the user.
 -- if the user tries to pay more money than the order requires, any excess money is returned to
--- the money_incomes.balance it has been previously taken from.
+-- the *money_incomes* row it has been previously taken from.
 CREATE OR ALTER TRIGGER vitta.trg_payments_update ON test.vitta.payments
 INSTEAD OF UPDATE
 AS
@@ -159,9 +159,10 @@ AS
     END
 GO
 
--- the DML trigger that modifies the orders and money_incomes tables on DELETE
--- if a deletion from the payments table is performed, money from orders gets transferred back to money_incomes
--- (in the situation where the user tries to delete a payment, i assume that the payment has been cancelled)
+-- the DML trigger that modifies the *orders* and *money_incomes* tables on DELETE.
+-- if a deletion from the payments table is performed, money from the *orders* table gets transferred back
+-- to the *money_incomes* table.
+-- (in the situation where the user tries to delete a payment, i assume that the payment has been cancelled).
 CREATE OR ALTER TRIGGER vitta.trg_payments_delete ON test.vitta.payments
 AFTER DELETE
 AS
@@ -201,23 +202,3 @@ GO
 INSERT INTO test.vitta.payments(order_id, income_id, sum) VALUES
 (2, 2, 1000);
 GO
-
--- TESTING
-
-update test.vitta.payments
-set order_id = 1, income_id = 2, sum = 4000
-where id = 1;
-go
-
-select * from test.vitta.orders;
-select * from test.vitta.money_incomes;
-select * from test.vitta.payments;
-go
-
-delete from test.vitta.payments
-where id = 5;
-
-select * from test.vitta.orders;
-select * from test.vitta.money_incomes;
-select * from test.vitta.payments;
-go
