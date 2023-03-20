@@ -6,8 +6,8 @@ GO
 DROP TABLE test.vitta.payments, test.vitta.orders, test.vitta.money_incomes;
 GO
 
-DROP SCHEMA test;
+DROP SCHEMA vitta;
 GO
 
-DROP DATABASE vitta;
+DROP DATABASE test;
 GO
