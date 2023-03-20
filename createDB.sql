@@ -9,29 +9,31 @@ GO
 CREATE SCHEMA vitta;
 GO
 
--- orders / заказы
+-- TABLE: orders / заказы
 CREATE TABLE test.vitta.orders (
     id bigint PRIMARY KEY IDENTITY,
     date datetime NOT NULL DEFAULT GETDATE(),
     sum_whole money NOT NULL DEFAULT 0,
     CONSTRAINT chk_sum_whole_notnegative CHECK(sum_whole >= 0),
     sum_payed money NOT NULL DEFAULT 0,
-    CONSTRAINT chk_sum_payed_notnegative CHECK(sum_payed >= 0)
+    CONSTRAINT chk_sum_payed_notnegative CHECK(sum_payed >= 0),
+    CONSTRAINT chk_sum_payed_exceeding CHECK(sum_payed > sum_whole)
 );
 
--- money incomes / приход денег
+-- TABLE: money_incomes / приход денег
 CREATE TABLE test.vitta.money_incomes (
     id bigint PRIMARY KEY IDENTITY NOT NULL,
     date datetime NOT NULL DEFAULT GETDATE(),
     incoming_payment money NOT NULL DEFAULT 0,
     CONSTRAINT chk_incoming_payment_notnegative CHECK(incoming_payment >= 0),
     balance money NOT NULL DEFAULT 0,
-    CONSTRAINT chk_balance_notnegative CHECK(balance >= 0)
+    CONSTRAINT chk_balance_notnegative CHECK(balance >= 0),
+    CONSTRAINT chk_balance_exceeding CHECK(balance > incoming_payment)
 );
 
--- payments / платежи
+-- TABLE: payments / платежи
 CREATE TABLE test.vitta.payments (
-    id bigint PRIMARY KEY IDENTITY,     -- added a PKEY column to implement a deletion by payment transaction id
+    id bigint PRIMARY KEY IDENTITY,     -- added a PKEY column to implement a deletion by payment transaction id trigger
     order_id bigint NOT NULL,
     income_id bigint NOT NULL,
     sum money NOT NULL DEFAULT 0,
@@ -43,10 +45,10 @@ GO
 
 -- TRIGGERS
 
--- the DML trigger that modifies the orders and money_incomes tables on INSERT
--- upon its execution, orders.sum_payed should increase and money_incomes.balance should decrease respectfully
--- money_incomes.balance cannot become negative (can only become 0)
--- payments.sum + orders.sum_payed should not be above orders.sum_whole (implemented as a forced return of the excess money)
+-- the DML trigger that modifies the orders and money_incomes tables on INSERT.
+-- upon its execution, orders.sum_payed should increase and money_incomes.balance should decrease respectfully.
+-- money_incomes.balance cannot become negative (can only become 0).
+-- payments.sum + orders.sum_payed should not be above orders.sum_whole (implemented as a forced return of the excess money).
 CREATE OR ALTER TRIGGER vitta.trg_payments_insert ON test.vitta.payments
 INSTEAD OF INSERT
 AS
@@ -87,9 +89,13 @@ AS
     END
 GO
 
--- the DML trigger that modifies the orders and money_incomes tables on UPDATE
--- performes comparison of old and new states of column values
--- updates the orders and money_incomes tables with new values if the update is possible 
+-- the DML trigger that modifies the orders and money_incomes tables on UPDATE.
+-- performes comparison of old and new states of column values.
+-- updates the orders and money_incomes tables with new values if the update is possible.
+-- update is rendered impossible if either new or old money_incomes.balance values can't store
+-- the amount of money entered by the user.
+-- if the user tries to pay more money than the order requires, any excess money is returned to
+-- the money_incomes.balance it has been previously taken from.
 CREATE OR ALTER TRIGGER vitta.trg_payments_update ON test.vitta.payments
 INSTEAD OF UPDATE
 AS
@@ -111,34 +117,23 @@ AS
                 return;
             END
 
-        IF @new_inc_id != @old_inc_id
+        IF (@new_inc_id = @old_inc_id
+            AND (SELECT balance FROM money_incomes WHERE id = @new_inc_id) + @old_sum - @new_sum >= 0)
+        OR (@new_inc_id != @old_inc_id
+            AND (SELECT balance FROM money_incomes WHERE id = @new_inc_id) - @new_sum >= 0
+            AND (SELECT balance FROM money_incomes WHERE id = @old_inc_id) + @old_sum <=
+                (SELECT incoming_payment FROM money_incomes WHERE id = @old_inc_id))
             BEGIN
                 UPDATE money_incomes
                 SET balance += @old_sum
                 WHERE id = @old_inc_id;
 
-                -- UPDATE money_incomes
-                -- SET balance -= @old_sum
-                -- WHERE id = @new_inc_id;
-            END
-        
-        IF @new_ord_id != @old_ord_id
-            BEGIN
                 UPDATE orders
                 SET sum_payed -= @old_sum
                 WHERE id = @old_ord_id;
 
-                UPDATE orders
-                SET sum_payed += @old_sum
-                WHERE id = @new_ord_id;
-            END
-
-        IF (SELECT balance FROM money_incomes WHERE id = @new_inc_id) + @old_sum - @new_sum >= 0
-        AND (SELECT balance FROM money_incomes WHERE id = @new_inc_id) + @old_sum - @new_sum <=
-            (SELECT incoming_payment FROM money_incomes WHERE id = @new_inc_id)
-            BEGIN
                 DECLARE @excess money;
-                SET @excess = (SELECT sum_payed FROM orders WHERE id = @new_ord_id) - @old_sum
+                SET @excess = (SELECT sum_payed FROM orders WHERE id = @new_ord_id)
                             - (SELECT sum_whole FROM orders WHERE id = @new_ord_id) + @new_sum;
 
                 IF @excess > 0
@@ -147,11 +142,11 @@ AS
                     END
 
                 UPDATE test.vitta.money_incomes
-                SET balance += @old_sum - @new_sum
+                SET balance -= @new_sum
                 WHERE @new_inc_id = id;
 
                 UPDATE test.vitta.orders
-                SET sum_payed += @new_sum - @old_sum
+                SET sum_payed += @new_sum
                 WHERE @new_ord_id = id;
 
                 UPDATE test.vitta.payments
@@ -194,34 +189,24 @@ GO
 -- INITIAL VALUES INSERTION
 
 INSERT INTO test.vitta.orders(sum_whole, sum_payed) VALUES
-(100, 0),
-(200, 100),
-(333, 50);
+(1000, 0),
+(5500, 0);
+GO
 
 INSERT INTO test.vitta.money_incomes(incoming_payment, balance) VALUES
-(500, 500),
-(600, 400),
-(700, 100.10);
-
-
--- TESTING
-
-insert into test.vitta.orders(sum_whole, sum_payed) VALUES (1000, 0);
-insert into test.vitta.money_incomes(incoming_payment, balance) VALUES (2000, 2000);
-go
+(2000, 2000),
+(7000, 7000);
+GO
 
 INSERT INTO test.vitta.payments(order_id, income_id, sum) VALUES
 (2, 2, 1000);
 GO
 
-select * from test.vitta.orders;
-select * from test.vitta.money_incomes;
-select * from test.vitta.payments;
-go
+-- TESTING
 
 update test.vitta.payments
-set order_id = 1, income_id = 1, sum = -10000
-where id = 2;
+set order_id = 1, income_id = 2, sum = 4000
+where id = 1;
 go
 
 select * from test.vitta.orders;
