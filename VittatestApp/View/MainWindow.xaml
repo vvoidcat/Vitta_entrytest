@@ -40,6 +40,7 @@
                 Title="Orders"
                 ItemsSource="{Binding orders}"
                 IsReadonly="True"
+                ButtonsVisibility="Collapsed"
                 Grid.Column="0"/>
 
             <!-- INCOMES -->
@@ -47,6 +48,7 @@
                 Title="Money Incomes"
                 ItemsSource="{Binding incomes}"
                 IsReadonly="True"
+                ButtonsVisibility="Collapsed"
                 Grid.Column="1"/>
         </Grid>
 
@@ -60,52 +62,13 @@
             </Grid.RowDefinitions>
 
             <!-- PAYMENTS -->
-            <Grid
-                Margin="5 0 5 5"
-                Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <StackPanel>
-                    <TextBlock
-                        Text="Payments"
-                        Style="{StaticResource Style_TableHeaders}"/>
-
-                    <Grid Margin="0 10 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBox
-                            Style="{StaticResource Style_TableTextBoxes}"
-                            Grid.Column="0"/>
-
-                        <TextBox
-                            Style="{StaticResource Style_TableTextBoxes}"
-                            Grid.Column="1"/>
-
-                        <TextBox
-                            Style="{StaticResource Style_TableTextBoxes}"
-                            Grid.Column="2"/>
-
-                        <Button
-                            Content="Add"
-                            Style="{StaticResource Style_TableAddButtons}"
-                            Grid.Column="3"/>
-                    </Grid>
-                </StackPanel>
-
-                <ItemsControl
-                    Background="GhostWhite"
-                    Grid.Row="1">
-
-                </ItemsControl>
-            </Grid>
+            <controls:TableView
+                    Title="Payments"
+                    ItemsSource="{Binding payments}"
+                    IsReadonly="False"
+                    ButtonsVisibility="Visible"
+                    DeleteCommand="{Binding deleteSelectedPaymentCommand}"
+                    Grid.Row="0"/>
 
             <TextBlock
                     Text="error messages errors erros errors"

@@ -3,19 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VittatestApp.ViewModel"
+             xmlns:local="clr-namespace:VittatestApp.View"
+             xmlns:converter="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
              x:Name="Root"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-
-    <!-- delete later -->
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="DictionaryStyles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
     <Grid
         Margin="5 0 5 5">
@@ -61,7 +53,33 @@
             ItemsSource="{Binding ElementName=Root, Path=ItemsSource}"
             Style="{StaticResource Style_DataGrid}"
             IsReadOnly="{Binding ElementName=Root, Path=IsReadonly}"
+            CanUserAddRows="False"
+            CanUserReorderColumns="False"
+            AutoGenerateColumns="True"
+            AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
+            ColumnWidth="*"
             Grid.Row="1">
+
+            <DataGrid.Columns>
+                <DataGridTemplateColumn
+                    Visibility="Collapsed"
+                    Width="20">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Content="x"
+                                Command="{Binding ElementName=Root, Path=DeleteCommand}"
+                                CommandParameter="{Binding SelectedIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                Style="{StaticResource Style_DeleteButtons}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTextColumn 
+                    Header="id"
+                    Binding="{Binding id}"
+                    Width="40"/>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

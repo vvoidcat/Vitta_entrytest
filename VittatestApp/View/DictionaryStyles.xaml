@@ -31,6 +31,15 @@
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
+
+    <Style x:Key="Style_DeleteButtons" TargetType="Button">
+        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="Foreground" Value="DarkRed"/>
+        <Setter Property="Width" Value="17"/>
+        <Setter Property="Height" Value="17"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="-1 -2 -1 -1"/>
+    </Style>
     
     
     <!-- ERRORS -->

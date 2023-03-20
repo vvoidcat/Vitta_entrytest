@@ -44,9 +44,33 @@ namespace VittatestApp.View
             set { SetValue(ReadonlyProperty, value); }
         }
 
+        public static readonly DependencyProperty ButtonsVisibilityProperty =
+            DependencyProperty.Register("ButtonsVisibility", typeof(Visibility), typeof(TableView), new PropertyMetadata(Visibility.Collapsed));
+        public Visibility ButtonsVisibility
+        {
+            get { return (Visibility)GetValue(ButtonsVisibilityProperty); }
+            set { SetValue(ButtonsVisibilityProperty, value); }
+        }
+
+        public static readonly DependencyProperty DeleteCommandProperty =
+            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(TableView), new UIPropertyMetadata(null));
+        public ICommand DeleteCommand
+        {
+            get { return (ICommand)GetValue(DeleteCommandProperty); }
+            set { SetValue(DeleteCommandProperty, value); }
+        }
+
         public TableView()
         {
             InitializeComponent();
+        }
+
+        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e is not null && e.Column is not null && e.Column.Header.ToString() == "id")
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

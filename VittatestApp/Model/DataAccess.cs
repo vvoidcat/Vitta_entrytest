@@ -30,7 +30,7 @@ namespace VittatestApp.Model
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(ConnectionHelper.GetValue("VittaTestDB")))
             {
-                return connection.Query<Payment>("select * from test.vitta.money_incomes order by id").ToList();
+                return connection.Query<Payment>("select * from test.vitta.payments order by id").ToList();
             }
         }
     }
