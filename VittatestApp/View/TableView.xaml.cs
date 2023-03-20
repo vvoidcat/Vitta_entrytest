@@ -28,6 +28,30 @@ namespace VittatestApp.View
             set { SetValue(TitleProperty, value); }
         }
 
+        public static readonly DependencyProperty InsertionValueTitleProperty_1 =
+            DependencyProperty.Register("InsertionValueTitle_1", typeof(string), typeof(TableView), new PropertyMetadata(String.Empty));
+        public string InsertionValueTitle_1
+        {
+            get { return (string)GetValue(InsertionValueTitleProperty_1); }
+            set { SetValue(InsertionValueTitleProperty_1, value); }
+        }
+
+        public static readonly DependencyProperty InsertionValueTitleProperty_2 =
+            DependencyProperty.Register("InsertionValueTitle_2", typeof(string), typeof(TableView), new PropertyMetadata(String.Empty));
+        public string InsertionValueTitle_2
+        {
+            get { return (string)GetValue(InsertionValueTitleProperty_2); }
+            set { SetValue(InsertionValueTitleProperty_2, value); }
+        }
+
+        public static readonly DependencyProperty InsertionValueTitleProperty_3 =
+            DependencyProperty.Register("InsertionValueTitle_3", typeof(string), typeof(TableView), new PropertyMetadata(String.Empty));
+        public string InsertionValueTitle_3
+        {
+            get { return (string)GetValue(InsertionValueTitleProperty_3); }
+            set { SetValue(InsertionValueTitleProperty_3, value); }
+        }
+
         public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(object), typeof(TableView), new PropertyMetadata(null));
         public object ItemsSource
@@ -44,12 +68,12 @@ namespace VittatestApp.View
             set { SetValue(ReadonlyProperty, value); }
         }
 
-        public static readonly DependencyProperty ButtonsVisibilityProperty =
-            DependencyProperty.Register("ButtonsVisibility", typeof(Visibility), typeof(TableView), new PropertyMetadata(Visibility.Collapsed));
-        public Visibility ButtonsVisibility
+        public static readonly DependencyProperty IsDeletionEnabledProperty =
+            DependencyProperty.Register("IsDeletionEnabled", typeof(bool), typeof(TableView), new PropertyMetadata(false));
+        public bool IsDeletionEnabled
         {
-            get { return (Visibility)GetValue(ButtonsVisibilityProperty); }
-            set { SetValue(ButtonsVisibilityProperty, value); }
+            get { return (bool)GetValue(IsDeletionEnabledProperty); }
+            set { SetValue(IsDeletionEnabledProperty, value); }
         }
 
         public static readonly DependencyProperty DeleteCommandProperty =

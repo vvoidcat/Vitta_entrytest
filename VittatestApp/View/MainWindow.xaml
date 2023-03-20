@@ -40,7 +40,10 @@
                 Title="Orders"
                 ItemsSource="{Binding orders}"
                 IsReadonly="True"
-                ButtonsVisibility="Collapsed"
+                IsDeletionEnabled="False"
+                InsertionValueTitle_1="date"
+                InsertionValueTitle_2="sum_whole"
+                InsertionValueTitle_3="sum_payed"
                 Grid.Column="0"/>
 
             <!-- INCOMES -->
@@ -48,7 +51,10 @@
                 Title="Money Incomes"
                 ItemsSource="{Binding incomes}"
                 IsReadonly="True"
-                ButtonsVisibility="Collapsed"
+                IsDeletionEnabled="False"
+                InsertionValueTitle_1="date"
+                InsertionValueTitle_2="incoming_payment"
+                InsertionValueTitle_3="balance"
                 Grid.Column="1"/>
         </Grid>
 
@@ -63,17 +69,20 @@
 
             <!-- PAYMENTS -->
             <controls:TableView
-                    Title="Payments"
-                    ItemsSource="{Binding payments}"
-                    IsReadonly="False"
-                    ButtonsVisibility="Visible"
-                    DeleteCommand="{Binding deleteSelectedPaymentCommand}"
-                    Grid.Row="0"/>
+                Title="Payments"
+                ItemsSource="{Binding payments}"
+                IsReadonly="False"
+                IsDeletionEnabled="True"
+                DeleteCommand="{Binding deleteSelectedPaymentCommand}"
+                InsertionValueTitle_1="order_id"
+                InsertionValueTitle_2="income_id"
+                InsertionValueTitle_3="sum"
+                Grid.Row="0"/>
 
             <TextBlock
-                    Text="error messages errors erros errors"
-                    Style="{StaticResource Style_ErrorText}"
-                    Grid.Row="1"/>
+                Text="error messages errors erros errors"
+                Style="{StaticResource Style_ErrorText}"
+                Grid.Row="1"/>
 
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>

@@ -28,7 +28,7 @@ namespace VittatestApp.ViewModel
 
         public void DeleteSelectedPayment(int selectedIndex)
         {
-            // delete 
+            // deletion from payments query
         }
     }
 }

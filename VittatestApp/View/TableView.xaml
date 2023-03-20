@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VittatestApp.View"
-             xmlns:converter="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
              x:Name="Root"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -30,17 +29,41 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox
-                    Style="{StaticResource Style_TableTextBoxes}"
-                    Grid.Column="0"/>
+                <Canvas Name="c1" Grid.Column="0">
+                    <TextBox
+                        Style="{StaticResource Style_TableTextBoxes}"
+                        Width="{Binding ElementName=c1, Path=ActualWidth}"
+                        Canvas.ZIndex="1"/>
 
-                <TextBox
-                    Style="{StaticResource Style_TableTextBoxes}"
-                    Grid.Column="1"/>
+                    <TextBlock
+                        Text="{Binding ElementName=Root, Path=InsertionValueTitle_1}"
+                        Style="{StaticResource Style_TableInsertionValueHeader}"
+                        Canvas.ZIndex="0"/>
+                </Canvas>
 
-                <TextBox
-                    Style="{StaticResource Style_TableTextBoxes}"
-                    Grid.Column="2"/>
+                <Canvas Name="c2" Grid.Column="1">
+                    <TextBox
+                        Style="{StaticResource Style_TableTextBoxes}"
+                        Width="{Binding ElementName=c2, Path=ActualWidth}"
+                        Canvas.ZIndex="1"/>
+
+                    <TextBlock
+                        Text="{Binding ElementName=Root, Path=InsertionValueTitle_2}"
+                        Style="{StaticResource Style_TableInsertionValueHeader}"
+                        Canvas.ZIndex="0"/>
+                </Canvas>
+
+                <Canvas Name="c3" Grid.Column="2">
+                    <TextBox
+                        Style="{StaticResource Style_TableTextBoxes}"
+                        Width="{Binding ElementName=c3, Path=ActualWidth}"
+                        Canvas.ZIndex="1"/>
+
+                    <TextBlock
+                        Text="{Binding ElementName=Root, Path=InsertionValueTitle_3}"
+                        Style="{StaticResource Style_TableInsertionValueHeader}"
+                        Canvas.ZIndex="0"/>
+                </Canvas>
 
                 <Button
                     Content="Add"
@@ -62,12 +85,12 @@
 
             <DataGrid.Columns>
                 <DataGridTemplateColumn
-                    Visibility="Collapsed"
                     Width="20">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button
                                 Content="x"
+                                IsEnabled="{Binding ElementName=Root, Path=IsDeletionEnabled}"
                                 Command="{Binding ElementName=Root, Path=DeleteCommand}"
                                 CommandParameter="{Binding SelectedIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
                                 Style="{StaticResource Style_DeleteButtons}"/>

@@ -4,14 +4,27 @@
 
     <!-- TABLES -->
     <Style x:Key="Style_TableHeaders" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="IndianRed"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="FontSize" Value="16"/>
     </Style>
 
+    <Style x:Key="Style_TableInsertionValueHeader" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="LightGray"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="5 1 0 0"/>
+    </Style>
+
     <Style x:Key="Style_TableTextBoxes" TargetType="TextBox">
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="WhiteSmoke"/>
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Background" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="Style_TableAddButtons" TargetType="Button">
@@ -22,7 +35,6 @@
 
     <Style x:Key="Style_DataGrid" TargetType="DataGrid">
         <Setter Property="Background" Value="WhiteSmoke"/>
-        <Setter Property="Foreground" Value="DarkRed"/>
         <Setter Property="VerticalGridLinesBrush" Value="LightGray"/>
         <Setter Property="HorizontalGridLinesBrush" Value="LightGray"/>
         <Setter Property="AlternatingRowBackground" Value="WhiteSmoke"/>
@@ -33,18 +45,24 @@
     </Style>
 
     <Style x:Key="Style_DeleteButtons" TargetType="Button">
-        <Setter Property="Background" Value="LightGray"/>
-        <Setter Property="Foreground" Value="DarkRed"/>
+        <Setter Property="Background" Value="IndianRed"/>
+        <Setter Property="Foreground" Value="White"/>
         <Setter Property="Width" Value="17"/>
         <Setter Property="Height" Value="17"/>
+        <Setter Property="FontSize" Value="16"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="-1 -2 -1 -1"/>
+        <Setter Property="Padding" Value="0 -5 0 0"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="LightGray"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     
     
     <!-- ERRORS -->
     <Style x:Key="Style_ErrorText" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="Salmon"/>
+        <Setter Property="Foreground" Value="IndianRed"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
