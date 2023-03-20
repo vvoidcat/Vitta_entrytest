@@ -11,14 +11,14 @@ namespace VittatestApp.ViewModel
 {
     class ViewModelMain : ObservableObject
     {
-        public ObservableCollection<Order> orders { get; set; } = new ObservableCollection<Order>()
-        {
-            new Order(0, DateTime.Now, 100, 100),
-            new Order(1, DateTime.Now, 100, 100)
-        };
+        public List<Order> orders { get; set; } = new List<Order>();
+        public List<Income> incomes { get; set; } = new List<Income>();
+        public List<Payment> payments { get; set; } = new List<Payment>();
 
-        //public ICommand getOrdersCommand { get; set; }
-
-        public ViewModelMain() { }
+        public ViewModelMain() {
+            orders = DataAccess.GetAllOrdersByID();
+            incomes = DataAccess.GetAllIncomesByID();
+            payments = DataAccess.GetAllPaymentsByID();
+        }
     }
 }

@@ -20,12 +20,28 @@ namespace VittatestApp.View
     /// </summary>
     public partial class TableView : UserControl
     {
-        public static readonly DependencyProperty titleProperty =
+        public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register("Title", typeof(string), typeof(TableView), new PropertyMetadata(String.Empty));
         public string Title
         {
-            get { return (string)GetValue(titleProperty); }
-            set { SetValue(titleProperty, value); }
+            get { return (string)GetValue(TitleProperty); }
+            set { SetValue(TitleProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register("ItemsSource", typeof(object), typeof(TableView), new PropertyMetadata(null));
+        public object ItemsSource
+        {
+            get { return (object)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty ReadonlyProperty =
+            DependencyProperty.Register("IsReadonly", typeof(bool), typeof(TableView), new PropertyMetadata(null));
+        public bool IsReadonly
+        {
+            get { return (bool)GetValue(ReadonlyProperty); }
+            set { SetValue(ReadonlyProperty, value); }
         }
 
         public TableView()

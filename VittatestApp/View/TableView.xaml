@@ -57,12 +57,11 @@
             </Grid>
         </StackPanel>
 
-
         <DataGrid
-            ItemsSource="{Binding orders}"
+            ItemsSource="{Binding ElementName=Root, Path=ItemsSource}"
             Style="{StaticResource Style_DataGrid}"
+            IsReadOnly="{Binding ElementName=Root, Path=IsReadonly}"
             Grid.Row="1">
-
         </DataGrid>
     </Grid>
 </UserControl>

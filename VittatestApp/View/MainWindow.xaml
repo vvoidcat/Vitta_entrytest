@@ -38,11 +38,15 @@
             <!-- ORDERS -->
             <controls:TableView
                 Title="Orders"
+                ItemsSource="{Binding orders}"
+                IsReadonly="True"
                 Grid.Column="0"/>
 
             <!-- INCOMES -->
             <controls:TableView
                 Title="Money Incomes"
+                ItemsSource="{Binding incomes}"
+                IsReadonly="True"
                 Grid.Column="1"/>
         </Grid>
 
