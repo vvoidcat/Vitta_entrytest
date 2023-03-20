@@ -22,6 +22,13 @@
 
     <Style x:Key="Style_DataGrid" TargetType="DataGrid">
         <Setter Property="Background" Value="WhiteSmoke"/>
+        <Setter Property="Foreground" Value="DarkRed"/>
+        <Setter Property="VerticalGridLinesBrush" Value="LightGray"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="LightGray"/>
+        <Setter Property="AlternatingRowBackground" Value="WhiteSmoke"/>
+        <Setter Property="RowBackground" Value="GhostWhite"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
     

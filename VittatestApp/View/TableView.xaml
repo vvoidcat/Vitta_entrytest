@@ -59,6 +59,7 @@
 
 
         <DataGrid
+            ItemsSource="{Binding orders}"
             Style="{StaticResource Style_DataGrid}"
             Grid.Row="1">
 
