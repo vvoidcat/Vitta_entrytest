@@ -17,9 +17,17 @@ namespace VittatestApp.ViewModel
         public List<Payment> payments { get; set; } = new List<Payment>();
 
         public ICommand deleteSelectedPaymentCommand { get; set; }
+        public ICommand insertIntoPaymentsCommand { get; set; }
+        public ICommand insertIntoOrdersCommand { get; set; }
+        public ICommand insertIntoIncomesCommand { get; set; }
+
 
         public ViewModelMain() {
             deleteSelectedPaymentCommand = new RelayCommand<int>(DeleteSelectedPayment);
+            
+            insertIntoPaymentsCommand = new RelayCommand<object>(InsertIntoPayments);
+            insertIntoOrdersCommand = new RelayCommand<object>(InsertIntoOrders);
+            insertIntoIncomesCommand = new RelayCommand<object>(InsertIntoIncomes); 
 
             orders = DataAccess.GetAllOrdersByID();
             incomes = DataAccess.GetAllIncomesByID();
@@ -29,6 +37,31 @@ namespace VittatestApp.ViewModel
         public void DeleteSelectedPayment(int selectedIndex)
         {
             // deletion from payments query
+        }
+
+        public void InsertIntoPayments(object param)
+        {
+            if (param is not null && param is Tuple<string, string, string>)
+            {
+                Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
+                // call insert into payments query
+            }
+        }
+
+        public void InsertIntoOrders(object param)
+        {
+            if (param is not null && param is Tuple<string, string, string>)
+            {
+                Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
+            }
+        }
+
+        public void InsertIntoIncomes(object param)
+        {
+            if (param is not null && param is Tuple<string, string, string>)
+            {
+                Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
+            }
         }
     }
 }

@@ -84,6 +84,14 @@ namespace VittatestApp.View
             set { SetValue(DeleteCommandProperty, value); }
         }
 
+        public static readonly DependencyProperty InsertCommandProperty =
+            DependencyProperty.Register("InsertCommand", typeof(ICommand), typeof(TableView), new UIPropertyMetadata(null));
+        public ICommand InsertCommand
+        {
+            get { return (ICommand)GetValue(InsertCommandProperty); }
+            set { SetValue(InsertCommandProperty, value); }
+        }
+
         public TableView()
         {
             InitializeComponent();

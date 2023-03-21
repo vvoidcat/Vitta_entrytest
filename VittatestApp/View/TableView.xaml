@@ -3,10 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VittatestApp.View"
+             xmlns:converter="clr-namespace:VittatestApp.ViewModel"
              x:Name="Root"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <converter:InsertionParamsConverter x:Key="insertConv"/>
+    </UserControl.Resources>
+    
 
     <Grid
         Margin="5 0 5 5">
@@ -31,6 +36,7 @@
 
                 <Canvas Name="c1" Grid.Column="0">
                     <TextBox
+                        Name="t1"
                         Style="{StaticResource Style_TableTextBoxes}"
                         Width="{Binding ElementName=c1, Path=ActualWidth}"
                         Canvas.ZIndex="1"/>
@@ -43,6 +49,7 @@
 
                 <Canvas Name="c2" Grid.Column="1">
                     <TextBox
+                        Name="t2"
                         Style="{StaticResource Style_TableTextBoxes}"
                         Width="{Binding ElementName=c2, Path=ActualWidth}"
                         Canvas.ZIndex="1"/>
@@ -55,6 +62,7 @@
 
                 <Canvas Name="c3" Grid.Column="2">
                     <TextBox
+                        Name="t3"
                         Style="{StaticResource Style_TableTextBoxes}"
                         Width="{Binding ElementName=c3, Path=ActualWidth}"
                         Canvas.ZIndex="1"/>
@@ -67,8 +75,18 @@
 
                 <Button
                     Content="Add"
+                    IsEnabled="True"
+                    Command="{Binding ElementName=Root, Path=InsertCommand}"
                     Style="{StaticResource Style_TableAddButtons}"
-                    Grid.Column="3"/>
+                    Grid.Column="3">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource insertConv}">
+                            <Binding ElementName="t1" Path="Text"/>
+                            <Binding ElementName="t2" Path="Text"/>
+                            <Binding ElementName="t3" Path="Text"/>
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
             </Grid>
         </StackPanel>
 
