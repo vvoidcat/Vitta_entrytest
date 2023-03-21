@@ -76,9 +76,12 @@ namespace VittatestApp.ViewModel
 
         private void DeleteSelectedPayment(int selectedIndex)
         {
-            // deletion from payments query
-
-            UpdateTables(null);
+            // checks for the need to update and deletes a payment
+            if (payments is not null && payments.Count > 0 && DataAccess.DeleteFromPayments(payments[selectedIndex].id))
+            {
+                // should update only corresponding rows !!
+                UpdateTables(null);
+            }
         }
 
         private void InsertIntoPayments(object param)
@@ -86,11 +89,19 @@ namespace VittatestApp.ViewModel
             if (param is not null && param is Tuple<string, string, string>)
             {
                 Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
-                // call insert into payments query
-
-                // try catch SqlException
-
-                UpdateTables(null);
+                long order_id = StringToLong(tuple.Item1);
+                long income_id = StringToLong(tuple.Item2);
+                decimal sum = StringToDecimal(tuple.Item3);
+                
+                if (DataAccess.InsertIntoPayments(order_id, income_id, sum))
+                {
+                    // should update only corresponding rows !!
+                    UpdateTables(null);
+                }
+                else
+                {
+                    errorMessage = "Payments: data insertion failure: incorrect values";
+                }
             }
         }
 
@@ -137,6 +148,9 @@ namespace VittatestApp.ViewModel
             return (Decimal.TryParse(str, out decimal res)) ? res : 0;
         }
 
-
+        private static long StringToLong(string str)
+        {
+            return (Int64.TryParse(str, out long res)) ? res : 0;
+        }
     }
 }

@@ -43,7 +43,7 @@
         <Setter Property="HorizontalGridLinesBrush" Value="LightGray"/>
         <Setter Property="AlternatingRowBackground" Value="WhiteSmoke"/>
         <Setter Property="RowBackground" Value="GhostWhite"/>
-        <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
