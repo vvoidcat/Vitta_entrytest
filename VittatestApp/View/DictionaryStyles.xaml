@@ -3,6 +3,7 @@
 
 
     <!-- TABLES -->
+    
     <Style x:Key="Style_TableHeaders" TargetType="TextBlock">
         <Setter Property="Foreground" Value="IndianRed"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -62,13 +63,24 @@
         </Style.Triggers>
     </Style>
     
-    
-    <!-- ERRORS -->
+            
+    <!-- INFO & CONTROL PANEL -->
+            
     <Style x:Key="Style_ErrorText" TargetType="TextBlock">
         <Setter Property="Foreground" Value="IndianRed"/>
+        <Setter Property="FontSize" Value="13"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Padding" Value="10 5"/>
     </Style>
-    
-    <!-- -->
+
+    <Style x:Key="Style_ControlButtons" TargetType="Button">
+        
+    </Style>
+
+    <Style x:Key="Style_SessionInfoText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="LightGray"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
 </ResourceDictionary>
