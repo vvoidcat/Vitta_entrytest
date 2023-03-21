@@ -12,10 +12,25 @@ namespace VittatestApp.ViewModel
 {
     class ViewModelMain : ObservableObject
     {
+        private string _errorMessage = string.Empty;
+        public string errorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                if (value != _errorMessage)
+                {
+                    _errorMessage = value;
+                    OnPropertyChanged(nameof(errorMessage));
+                }
+            }
+        }
+
         public List<Order> orders { get; set; } = new List<Order>();
         public List<Income> incomes { get; set; } = new List<Income>();
         public List<Payment> payments { get; set; } = new List<Payment>();
 
+        public ICommand updateTables { get; set; }
         public ICommand deleteSelectedPaymentCommand { get; set; }
         public ICommand insertIntoPaymentsCommand { get; set; }
         public ICommand insertIntoOrdersCommand { get; set; }
@@ -23,45 +38,105 @@ namespace VittatestApp.ViewModel
 
 
         public ViewModelMain() {
+            updateTables = new RelayCommand<object>(UpdateTables);
+
             deleteSelectedPaymentCommand = new RelayCommand<int>(DeleteSelectedPayment);
             
             insertIntoPaymentsCommand = new RelayCommand<object>(InsertIntoPayments);
             insertIntoOrdersCommand = new RelayCommand<object>(InsertIntoOrders);
-            insertIntoIncomesCommand = new RelayCommand<object>(InsertIntoIncomes); 
+            insertIntoIncomesCommand = new RelayCommand<object>(InsertIntoIncomes);
 
-            orders = DataAccess.GetAllOrdersByID();
-            incomes = DataAccess.GetAllIncomesByID();
-            payments = DataAccess.GetAllPaymentsByID();
+            UpdateTables(null);
         }
 
-        public void DeleteSelectedPayment(int selectedIndex)
+        private void UpdateTables(object? sender)
+        {
+            UpdateTableOrders();
+            UpdateTableIncomes();
+            UpdateTablePayments();
+        }
+
+        private void UpdateTableOrders()
+        {
+            orders = DataAccess.GetAllOrdersOrdered();
+            OnPropertyChanged(nameof(orders));
+        }
+
+        private void UpdateTableIncomes()
+        {
+            incomes = DataAccess.GetAllIncomesOrdered();
+            OnPropertyChanged(nameof(incomes));
+        }
+
+        private void UpdateTablePayments()
+        {
+            payments = DataAccess.GetAllPaymentsOrdered();
+            OnPropertyChanged(nameof(payments));
+        }
+
+        private void DeleteSelectedPayment(int selectedIndex)
         {
             // deletion from payments query
+
+            UpdateTables(null);
         }
 
-        public void InsertIntoPayments(object param)
+        private void InsertIntoPayments(object param)
         {
             if (param is not null && param is Tuple<string, string, string>)
             {
                 Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
                 // call insert into payments query
+
+                // try catch SqlException
+
+                UpdateTables(null);
             }
         }
 
-        public void InsertIntoOrders(object param)
+        private void InsertIntoOrders(object param)
         {
             if (param is not null && param is Tuple<string, string, string>)
             {
                 Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
+                decimal sum_total = StringToDecimal(tuple.Item2);
+                decimal sum_payed = StringToDecimal(tuple.Item3);
+
+                if (DataAccess.InsertIntoOrders(DateTime.Now, sum_total, sum_payed))
+                {
+                    UpdateTableOrders();
+                } 
+                else
+                {
+                    errorMessage = "Orders: data insertion failure: incorrect values";
+                }
             }
         }
 
-        public void InsertIntoIncomes(object param)
+        private void InsertIntoIncomes(object param)
         {
             if (param is not null && param is Tuple<string, string, string>)
             {
                 Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
+                decimal income = StringToDecimal(tuple.Item2);
+                decimal balance = StringToDecimal(tuple.Item3);
+
+                if (DataAccess.InsertIntoIncomes(DateTime.Now, income, balance))
+                {
+                    UpdateTableIncomes();
+                }
+                else
+                {
+                    errorMessage = "Money Incomes: data insertion failure: incorrect values";
+                }
             }
         }
+
+        private static decimal StringToDecimal(string str)
+        {
+            return (Decimal.TryParse(str, out decimal res)) ? res : 0;
+        }
+
+
     }
 }

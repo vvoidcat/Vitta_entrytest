@@ -60,6 +60,14 @@ namespace VittatestApp.View
             set { SetValue(ItemsSourceProperty, value); }
         }
 
+        public static readonly DependencyProperty FirstInsertionBoxEnabledProperty =
+            DependencyProperty.Register("IsFirstInsertionBoxEnabled", typeof(bool), typeof(TableView), new PropertyMetadata(null));
+        public bool IsFirstInsertionBoxEnabled
+        {
+            get { return (bool)GetValue(FirstInsertionBoxEnabledProperty); }
+            set { SetValue(FirstInsertionBoxEnabledProperty, value); }
+        }
+
         public static readonly DependencyProperty ReadonlyProperty =
             DependencyProperty.Register("IsReadonly", typeof(bool), typeof(TableView), new PropertyMetadata(null));
         public bool IsReadonly

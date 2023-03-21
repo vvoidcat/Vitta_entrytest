@@ -35,7 +35,8 @@
                 IsReadonly="True"
                 IsDeletionEnabled="False"
                 InsertCommand="{Binding insertIntoOrdersCommand}"
-                InsertionValueTitle_1="date"
+                IsFirstInsertionBoxEnabled="False"
+                InsertionValueTitle_1="date: current"
                 InsertionValueTitle_2="sum_whole"
                 InsertionValueTitle_3="sum_payed"
                 Grid.Column="0"/>
@@ -47,7 +48,8 @@
                 IsReadonly="True"
                 IsDeletionEnabled="False"
                 InsertCommand="{Binding insertIntoIncomesCommand}"
-                InsertionValueTitle_1="date"
+                IsFirstInsertionBoxEnabled="False"
+                InsertionValueTitle_1="date: current"
                 InsertionValueTitle_2="incoming_payment"
                 InsertionValueTitle_3="balance"
                 Grid.Column="1"/>
@@ -67,6 +69,7 @@
                 IsDeletionEnabled="True"
                 DeleteCommand="{Binding deleteSelectedPaymentCommand}"
                 InsertCommand="{Binding insertIntoPaymentsCommand}"
+                IsFirstInsertionBoxEnabled="True"
                 InsertionValueTitle_1="order_id"
                 InsertionValueTitle_2="income_id"
                 InsertionValueTitle_3="sum"
@@ -85,6 +88,7 @@
 
                 <Button
                     Content="Update"
+                    Command="{Binding updateTables}"
                     VerticalContentAlignment="Top"
                     Style="{StaticResource Style_TableAddButtons}"
                     Grid.Row="0"/>
@@ -95,7 +99,7 @@
                     Grid.Row="1"/>
 
                 <TextBlock
-                    Text="error messages errors erros errors"
+                    Text="{Binding errorMessage}"
                     TextWrapping="Wrap"
                     Width="{Binding ElementName=InfoGrid, Path=ActualWidth}"
                     Style="{StaticResource Style_ErrorText}"
