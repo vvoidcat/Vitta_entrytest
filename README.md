@@ -25,4 +25,4 @@ WinForms/WPF (на ваше усмотрение).
 - ```Server=localhost\SQLEXPRESS;Database=test;Trusted_Connection=True;```
 
 Местоположение исполняемого файла после сборки в MS Visual Studio:
-- ``` ```
+- ```VittatestApp\bin\Release\net6.0-windows\VittatestApp.exe```
