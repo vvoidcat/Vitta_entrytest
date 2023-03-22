@@ -99,9 +99,16 @@
             IsReadOnly="{Binding ElementName=Root, Path=IsReadonly}"
             CanUserAddRows="False"
             CanUserReorderColumns="False"
+            CanUserResizeRows="False"
+            CanUserResizeColumns="False"
             AutoGenerateColumns="True"
             AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
             ColumnWidth="*"
+            EnableColumnVirtualization="True"
+            EnableRowVirtualization="True"
+            VirtualizingPanel.IsVirtualizing="True"
+            VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+            VirtualizingPanel.VirtualizationMode="Recycling"
             Grid.Row="1">
 
             <DataGrid.Columns>

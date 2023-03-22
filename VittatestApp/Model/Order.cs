@@ -10,7 +10,7 @@ namespace VittatestApp.Model
     {
         public long id { get; set; }
         public DateTime date { get; set; }
-        public decimal sum_whole { get; set; }
+        public decimal sum_total { get; set; }
         public decimal sum_payed { get; set; }
     }
 }

@@ -35,20 +35,20 @@ namespace VittatestApp.Model
             }
         }
 
-        public static bool InsertIntoOrders(DateTime? date, decimal? sum_whole, decimal? sum_payed)
+        public static bool InsertIntoOrders(DateTime? date, decimal? sum_total, decimal? sum_payed)
         {
             bool noErr = true;
 
             using (IDbConnection connection = new SqlConnection(ConnectionHelper.GetValue("VittaTestDB")))
             {
-                string query = @"insert into test.vitta.orders(date, sum_whole, sum_payed) values(@date, @sum_whole, @sum_payed)";
+                string query = @"insert into test.vitta.orders(date, sum_total, sum_payed) values(@date, @sum_total, @sum_payed)";
 
                 try
                 {
                     connection.Execute(query, new
                     {
                         date,
-                        sum_whole,
+                        sum_total,
                         sum_payed
                     });
                 }
@@ -60,20 +60,20 @@ namespace VittatestApp.Model
             return noErr;
         }
 
-        public static bool InsertIntoIncomes(DateTime? date, decimal? incoming, decimal? balance)
+        public static bool InsertIntoIncomes(DateTime? date, decimal? income, decimal? balance)
         {
             bool noErr = true;
 
             using (IDbConnection connection = new SqlConnection(ConnectionHelper.GetValue("VittaTestDB")))
             {
-                string query = @"insert into test.vitta.money_incomes(date, incoming_payment, balance) values(@date, @incoming, @balance)";
+                string query = @"insert into test.vitta.money_incomes(date, income, balance) values(@date, @income, @balance)";
 
                 try
                 {
                     connection.Execute(query, new
                     {
                         date,
-                        incoming,
+                        income,
                         balance
                     });
                 }

@@ -1,3 +1,6 @@
+USE test;
+GO
+
 DROP TRIGGER vitta.trg_payments_insert;
 DROP TRIGGER vitta.trg_payments_update;
 DROP TRIGGER vitta.trg_payments_delete;

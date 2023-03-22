@@ -31,26 +31,26 @@
         <!-- ORDERS -->
         <controls:TableView
                 Title="Orders"
-                ItemsSource="{Binding orders}"
+                ItemsSource="{Binding orders, IsAsync=True}"
                 IsReadonly="True"
                 IsDeletionEnabled="False"
                 InsertCommand="{Binding insertIntoOrdersCommand}"
                 IsFirstInsertionBoxEnabled="False"
                 InsertionValueTitle_1="date: current"
-                InsertionValueTitle_2="sum_whole"
+                InsertionValueTitle_2="sum_total"
                 InsertionValueTitle_3="sum_payed"
                 Grid.Column="0"/>
 
         <!-- INCOMES -->
         <controls:TableView
                 Title="Money Incomes"
-                ItemsSource="{Binding incomes}"
+                ItemsSource="{Binding incomes, IsAsync=True}"
                 IsReadonly="True"
                 IsDeletionEnabled="False"
                 InsertCommand="{Binding insertIntoIncomesCommand}"
                 IsFirstInsertionBoxEnabled="False"
                 InsertionValueTitle_1="date: current"
-                InsertionValueTitle_2="incoming_payment"
+                InsertionValueTitle_2="income"
                 InsertionValueTitle_3="balance"
                 Grid.Column="1"/>
 
@@ -64,7 +64,7 @@
             <!-- PAYMENTS -->
             <controls:TableView
                 Title="Payments"
-                ItemsSource="{Binding payments}"
+                ItemsSource="{Binding payments, IsAsync=True}"
                 IsReadonly="False"
                 IsDeletionEnabled="True"
                 DeleteCommand="{Binding deleteSelectedPaymentCommand}"
@@ -82,28 +82,22 @@
                 Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"/>
-                    <RowDefinition Height="20"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <Button
-                    Content="Update"
+                    Content="Refresh"
                     Command="{Binding updateTables}"
                     VerticalContentAlignment="Top"
                     Style="{StaticResource Style_TableAddButtons}"
                     Grid.Row="0"/>
 
                 <TextBlock
-                    Text="session info: aboba aboba"
-                    Style="{StaticResource Style_SessionInfoText}"
-                    Grid.Row="1"/>
-
-                <TextBlock
                     Text="{Binding errorMessage}"
                     TextWrapping="Wrap"
                     Width="{Binding ElementName=InfoGrid, Path=ActualWidth}"
                     Style="{StaticResource Style_ErrorText}"
-                    Grid.Row="2"/>
+                    Grid.Row="1"/>
             </Grid>
         </Grid>
     </Grid>

@@ -46,7 +46,9 @@ namespace VittatestApp.ViewModel
             insertIntoOrdersCommand = new RelayCommand<object>(InsertIntoOrders);
             insertIntoIncomesCommand = new RelayCommand<object>(InsertIntoIncomes);
 
-            UpdateTables(null);
+            orders = DataAccess.GetAllOrdersOrdered();
+            incomes = DataAccess.GetAllIncomesOrdered();
+            payments = DataAccess.GetAllPaymentsOrdered();
         }
 
         private void UpdateTables(object? sender)
@@ -76,11 +78,15 @@ namespace VittatestApp.ViewModel
 
         private void DeleteSelectedPayment(int selectedIndex)
         {
-            // checks for the need to update and deletes a payment
-            if (payments is not null && payments.Count > 0 && DataAccess.DeleteFromPayments(payments[selectedIndex].id))
+            if (payments is not null && payments.Count > 0)
             {
-                // should update only corresponding rows !!
-                UpdateTables(null);
+                if (DataAccess.DeleteFromPayments(payments[selectedIndex].id))
+                {
+                    UpdateTables(null);
+                } else
+                {
+                    UpdateTablePayments();
+                }
             }
         }
 
@@ -89,18 +95,20 @@ namespace VittatestApp.ViewModel
             if (param is not null && param is Tuple<string, string, string>)
             {
                 Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
-                long order_id = StringToLong(tuple.Item1);
-                long income_id = StringToLong(tuple.Item2);
-                decimal sum = StringToDecimal(tuple.Item3);
-                
+                long order_id = StringConverter.StringToLong(tuple.Item1);
+                long income_id = StringConverter.StringToLong(tuple.Item2);
+                decimal sum = StringConverter.StringToDecimal(tuple.Item3);
+
                 if (DataAccess.InsertIntoPayments(order_id, income_id, sum))
                 {
-                    // should update only corresponding rows !!
+                    errorMessage = String.Empty;
                     UpdateTables(null);
                 }
                 else
                 {
-                    errorMessage = "Payments: data insertion failure: incorrect values";
+                    errorMessage = "Payments: data insertion failure: incorrect values / " +
+                        "the payment for the specified order was already transferred in full by you or another user; " +
+                        "please refresh the page manually to display the changes";
                 }
             }
         }
@@ -110,11 +118,12 @@ namespace VittatestApp.ViewModel
             if (param is not null && param is Tuple<string, string, string>)
             {
                 Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
-                decimal sum_total = StringToDecimal(tuple.Item2);
-                decimal sum_payed = StringToDecimal(tuple.Item3);
+                decimal sum_total = StringConverter.StringToDecimal(tuple.Item2);
+                decimal sum_payed = StringConverter.StringToDecimal(tuple.Item3);
 
                 if (DataAccess.InsertIntoOrders(DateTime.Now, sum_total, sum_payed))
                 {
+                    errorMessage = String.Empty;
                     UpdateTableOrders();
                 } 
                 else
@@ -129,11 +138,12 @@ namespace VittatestApp.ViewModel
             if (param is not null && param is Tuple<string, string, string>)
             {
                 Tuple<string, string, string> tuple = (Tuple<string, string, string>)param;
-                decimal income = StringToDecimal(tuple.Item2);
-                decimal balance = StringToDecimal(tuple.Item3);
+                decimal income = StringConverter.StringToDecimal(tuple.Item2);
+                decimal balance = StringConverter.StringToDecimal(tuple.Item3);
 
                 if (DataAccess.InsertIntoIncomes(DateTime.Now, income, balance))
                 {
+                    errorMessage = String.Empty;
                     UpdateTableIncomes();
                 }
                 else
@@ -141,16 +151,6 @@ namespace VittatestApp.ViewModel
                     errorMessage = "Money Incomes: data insertion failure: incorrect values";
                 }
             }
-        }
-
-        private static decimal StringToDecimal(string str)
-        {
-            return (Decimal.TryParse(str, out decimal res)) ? res : 0;
-        }
-
-        private static long StringToLong(string str)
-        {
-            return (Int64.TryParse(str, out long res)) ? res : 0;
         }
     }
 }
