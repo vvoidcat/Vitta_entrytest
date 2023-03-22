@@ -48,8 +48,7 @@ GO
 -- the DML trigger that modifies the *payments*, *orders* and *money_incomes* tables on INSERT.
 -- upon its execution, *orders.sum_payed* should increase and *money_incomes.balance* should decrease respectfully.
 -- *money_incomes.balance* cannot become negative (can only become 0).
--- *payments.sum* + *orders.sum_payed* should not be above *orders.sum_total*
--- (implemented as a forced return of the excess money).
+-- *payments.sum* + *orders.sum_payed* should not be above *orders.sum_total* (implemented as a forced return of the excess money).
 CREATE OR ALTER TRIGGER vitta.trg_payments_insert ON test.vitta.payments
 INSTEAD OF INSERT
 AS
@@ -104,13 +103,12 @@ AS
     END
 GO
 
--- (working, but not used in the app's WPF UI)
+-- (i ended up not using any update queries in the UI application, but the trigger is functional)
 -- the DML trigger that modifies the *payments*, *orders* and *money_incomes* tables on UPDATE.
--- performes comparison of old and new states of column values.
--- the update is rendered impossible if neither new or old *money_incomes.balance* values can
--- the amount of money entered by the user.
--- if the user tries to pay more money than the order requires, any excess money is returned to
--- the *money_incomes* row it has been previously taken from.
+-- performes comparison of old and new states of column values, can process updating row values separately or all at once.
+-- the update is rendered impossible if neither new or old *money_incomes.balance* values can accept the amount of money entered by the user.
+-- if the user tries to pay more money than the order requires, any excess money is returned to the *money_incomes* row it has been previously taken from.
+-- if the user tries to change the values in the *income_id* or *order_id* columns, the money transaction involving the previous values will be revoked.
 CREATE OR ALTER TRIGGER vitta.trg_payments_update ON test.vitta.payments
 INSTEAD OF UPDATE
 AS
@@ -190,8 +188,7 @@ AS
 GO
 
 -- the DML trigger that modifies the *orders* and *money_incomes* tables on DELETE.
--- if a deletion from the payments table is performed, money from the *orders* table gets transferred back
--- to the *money_incomes* table.
+-- if a deletion from the payments table is performed, money from the *orders* table gets transferred back to the *money_incomes* table.
 -- (in the situation where the user tries to delete a payment, i assume that the payment has been cancelled).
 CREATE OR ALTER TRIGGER vitta.trg_payments_delete ON test.vitta.payments
 AFTER DELETE
