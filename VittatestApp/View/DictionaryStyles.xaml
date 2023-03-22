@@ -81,7 +81,6 @@
 
     <Style x:Key="Style_SessionInfoText" TargetType="TextBlock">
         <Setter Property="Foreground" Value="LightGray"/>
-        <Setter Property="FontSize" Value="11"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
 </ResourceDictionary>

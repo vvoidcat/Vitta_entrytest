@@ -1,3 +1,5 @@
+## Задание
+
 Необходимо создать простое приложение, с БД на MS Sql Server Express, и клиентскую часть
 WinForms/WPF (на ваше усмотрение).
 
@@ -13,3 +15,14 @@ WinForms/WPF (на ваше усмотрение).
 оплачен несколькими платежами, а также одни и те же приходы денег могут быть использованы
 в нескольких платежах, пока остаток не закончится. Так же необходимо учитывать ситуацию, когда
 два пользователя пытаются привязать оплату одновременно к одному заказу.
+
+## Реализация
+
+Создание и заполнение базы данных: ```sqlcmd -S .\SQLEXPRESS -i "ABSOLUTE_PATH\Database\createDB.sql"``` \
+Очищение и удаление базы: ```sqlcmd -S .\SQLEXPRESS -i "ABSOLUTE_PATH\Database\dropDB.sql"```
+
+Строка подключения к MS SQL Server Express (указана в файле **VittatestApp\App.config**):
+- ```Server=localhost\SQLEXPRESS;Database=test;Trusted_Connection=True;```
+
+Местоположение исполняемого файла после сборки в MS Visual Studio:
+- ``` ```

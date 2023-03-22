@@ -68,14 +68,6 @@ namespace VittatestApp.View
             set { SetValue(FirstInsertionBoxEnabledProperty, value); }
         }
 
-        public static readonly DependencyProperty ReadonlyProperty =
-            DependencyProperty.Register("IsReadonly", typeof(bool), typeof(TableView), new PropertyMetadata(null));
-        public bool IsReadonly
-        {
-            get { return (bool)GetValue(ReadonlyProperty); }
-            set { SetValue(ReadonlyProperty, value); }
-        }
-
         public static readonly DependencyProperty IsDeletionEnabledProperty =
             DependencyProperty.Register("IsDeletionEnabled", typeof(bool), typeof(TableView), new PropertyMetadata(false));
         public bool IsDeletionEnabled

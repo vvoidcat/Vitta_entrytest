@@ -107,8 +107,7 @@ namespace VittatestApp.ViewModel
                 else
                 {
                     errorMessage = "Payments: data insertion failure: incorrect values / " +
-                        "the payment for the specified order was already transferred in full by you or another user; " +
-                        "please refresh the page manually to display the changes";
+                        "linking payment to a fully payed order (refresh the page to display the updated order status)";
                 }
             }
         }

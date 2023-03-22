@@ -32,7 +32,6 @@
         <controls:TableView
                 Title="Orders"
                 ItemsSource="{Binding orders, IsAsync=True}"
-                IsReadonly="True"
                 IsDeletionEnabled="False"
                 InsertCommand="{Binding insertIntoOrdersCommand}"
                 IsFirstInsertionBoxEnabled="False"
@@ -45,7 +44,6 @@
         <controls:TableView
                 Title="Money Incomes"
                 ItemsSource="{Binding incomes, IsAsync=True}"
-                IsReadonly="True"
                 IsDeletionEnabled="False"
                 InsertCommand="{Binding insertIntoIncomesCommand}"
                 IsFirstInsertionBoxEnabled="False"
@@ -65,7 +63,6 @@
             <controls:TableView
                 Title="Payments"
                 ItemsSource="{Binding payments, IsAsync=True}"
-                IsReadonly="False"
                 IsDeletionEnabled="True"
                 DeleteCommand="{Binding deleteSelectedPaymentCommand}"
                 InsertCommand="{Binding insertIntoPaymentsCommand}"

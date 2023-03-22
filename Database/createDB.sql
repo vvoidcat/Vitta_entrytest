@@ -104,6 +104,7 @@ AS
     END
 GO
 
+-- (working, but not used in the app's WPF UI)
 -- the DML trigger that modifies the *payments*, *orders* and *money_incomes* tables on UPDATE.
 -- performes comparison of old and new states of column values.
 -- the update is rendered impossible if neither new or old *money_incomes.balance* values can

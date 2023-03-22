@@ -94,9 +94,10 @@
         </StackPanel>
 
         <DataGrid
+            Name="TableGrid"
             ItemsSource="{Binding ElementName=Root, Path=ItemsSource}"
             Style="{StaticResource Style_DataGrid}"
-            IsReadOnly="{Binding ElementName=Root, Path=IsReadonly}"
+            IsReadOnly="True"
             CanUserAddRows="False"
             CanUserReorderColumns="False"
             CanUserResizeRows="False"

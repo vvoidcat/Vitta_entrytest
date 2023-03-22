@@ -15,7 +15,17 @@ namespace VittatestApp.Model
         {
             using (IDbConnection connection = new SqlConnection(ConnectionHelper.GetValue("VittaTestDB")))
             {
-                return connection.Query<Order>("select * from test.vitta.orders order by id").ToList();
+                List<Order> orders;
+
+                try
+                {
+                    orders = connection.Query<Order>("select * from test.vitta.orders order by id").ToList();
+                }
+                catch (SqlException)
+                {
+                    orders = new List<Order>();
+                }
+                return orders;
             }
         }
 
@@ -23,7 +33,17 @@ namespace VittatestApp.Model
         {
             using (IDbConnection connection = new SqlConnection(ConnectionHelper.GetValue("VittaTestDB")))
             {
-                return connection.Query<Income>("select * from test.vitta.money_incomes order by id").ToList();
+                List<Income> incomes;
+
+                try
+                {
+                    incomes = connection.Query<Income>("select * from test.vitta.money_incomes order by id").ToList();
+                }
+                catch (SqlException)
+                {
+                    incomes = new List<Income>();
+                }
+                return incomes;
             }
         }
 
@@ -31,7 +51,17 @@ namespace VittatestApp.Model
         {
             using (IDbConnection connection = new SqlConnection(ConnectionHelper.GetValue("VittaTestDB")))
             {
-                return connection.Query<Payment>("select * from test.vitta.payments order by id").ToList();
+                List<Payment> payments;
+
+                try
+                {
+                    payments = connection.Query<Payment>("select * from test.vitta.payments order by id").ToList();
+                }
+                catch (SqlException)
+                {
+                    payments= new List<Payment>();
+                }
+                return payments;
             }
         }
 
